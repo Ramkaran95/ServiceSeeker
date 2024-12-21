@@ -12,7 +12,7 @@ namespace ServiceSeeker.Model
         public required String MiddleName { get; set; }
         public required String LastName { get; set; }
         public required int PhoneNumber { get; set; }
-        public required int Email { get; set; }
+        public required string Email { get; set; }
         public required int ID { get; set; }
 
         public required int Password { get; set; }
