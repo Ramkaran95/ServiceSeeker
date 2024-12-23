@@ -13,7 +13,7 @@ namespace ServiceSeeker.Migrations
 {
     [DbContext(typeof(ServiceSeekerDB))]
     [Migration("20241217093726_initial migration")]
-    partial class initialmigration
+    partial class Initialmigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
