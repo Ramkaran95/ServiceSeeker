@@ -43,5 +43,6 @@ namespace ServiceSeeker.Model
         public string? Otp { get; set; } = null;
 
         public DateTime? OtpExpiry { get; set; } = null;
+
     }
 }

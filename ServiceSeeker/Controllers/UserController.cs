@@ -157,7 +157,7 @@ namespace ServiceSeeker.Controllers
                 user.MiddleName = userdto.MiddleName;
             }
 
-            if (userdto.PhoneNumber.Equals(""))
+            if (!string.IsNullOrEmpty(userdto.PhoneNumber))
             {
                 user.PhoneNumber = userdto.PhoneNumber;
             }

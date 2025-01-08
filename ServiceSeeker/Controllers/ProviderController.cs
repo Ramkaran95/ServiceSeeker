@@ -181,7 +181,7 @@ namespace ServiceSeeker.Controllers
 
         }
 
-      
+
         [HttpPut]
         [Route("ChangePassword")]
         public ActionResult ChangePassword(int id, PChangePasswordDTO changePassword)
@@ -223,7 +223,7 @@ namespace ServiceSeeker.Controllers
             }
 
             // Update the password
-            user.Password = resetDto.NewPassword; 
+            user.Password = resetDto.NewPassword;
             user.Otp = null; // Clear the OTP after successful reset
             user.OtpExpiry = null;
             _dbContext.SaveChanges();
@@ -248,12 +248,12 @@ namespace ServiceSeeker.Controllers
             user.OtpExpiry = DateTime.UtcNow.AddMinutes(10); // OTP valid for 10 minutes
             _dbContext.SaveChanges();
 
-            SendOtpToUser(user.Email,user.FirstName, otp);
+            SendOtpToUser(user.Email, user.FirstName, otp);
 
             return Ok(new { Message = "OTP sent successfully." });
         }
 
-        private void SendOtpToUser(string email,string name, string otp)
+        private void SendOtpToUser(string email, string name, string otp)
         {
             try
             {
@@ -292,8 +292,250 @@ namespace ServiceSeeker.Controllers
         }
 
 
+        [HttpPut]
+        [Route("UpdatePersonal")]
+        public ActionResult UserUpdate(int id, PUpdatePersonalDTO userdto)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var user = _dbContext.Providers.FirstOrDefault(x => x.ProviderId == id);
+            if (user == null)
+            {
+                return NotFound("User id is invalid..");
+
+            }
+            // Update only the provided properties
+            if (!string.IsNullOrEmpty(userdto.UserName) && user.UserName != userdto.UserName)
+            {
+                var existingUser = _dbContext.Providers.FirstOrDefault(x => x.UserName == userdto.UserName);
+                if (existingUser != null)
+                {
+
+                    return BadRequest("username not available..");
+
+                }
+                user.UserName = userdto.UserName;
+            }
+
+            if (!string.IsNullOrEmpty(userdto.FirstName))
+            {
+                user.FirstName = userdto.FirstName;
+            }
+
+            if (!string.IsNullOrEmpty(userdto.LastName))
+            {
+                user.LastName = userdto.LastName;
+            }
+
+            if (!string.IsNullOrEmpty(userdto.MiddleName))
+            {
+                user.MiddleName = userdto.MiddleName;
+            }
+
+            if (!string.IsNullOrEmpty(userdto.PhoneNumber))
+            {
+                user.PhoneNumber = userdto.PhoneNumber;
+            }
+
+            if (!string.IsNullOrEmpty(userdto.Email) && user.Email != userdto.Email)
+            {
+                var existingUser = _dbContext.Providers.FirstOrDefault(x => x.Email == userdto.Email);
+                if (existingUser != null)
+                {
+
+                    return BadRequest("email already registered..");
+
+                }
+
+                user.Email = userdto.Email;
+            }
+            if (!string.IsNullOrEmpty(userdto.ProfilePhoto))
+            {
+                user.ProfilePhoto = userdto.ProfilePhoto;
+            }
+
+            // Save the changes to the database
+            _dbContext.SaveChanges();
+
+            return Ok(new { Message = "User's Personal data updated successfully." });
+        }
+
+        [HttpPut]
+        [Route("UpdateProfessional")]
+        public ActionResult UserUpadteP(int id, PUpdateProfessionalDTO userdto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var user = _dbContext.Providers.FirstOrDefault(x => x.ProviderId == id);
+            if (user == null)
+            {
+                return NotFound("User id is invalid..");
+
+            }
+            if (!string.IsNullOrEmpty(userdto.ProfessionType))
+            {
+                user.ProfessionType = userdto.ProfessionType;
+            }
+
+            if (!(userdto.YearOfEx < 0 || userdto.YearOfEx == null))
+            {
+                user.YearOfEx = userdto.YearOfEx;
+            }
+
+            if (!string.IsNullOrEmpty(userdto.Bio))
+            {
+                user.Bio = userdto.Bio;
+            }
+
+            if (!string.IsNullOrEmpty(userdto.LanguageSpoke))
+            {
+                user.LanguageSpoke = userdto.LanguageSpoke;
+            }
+
+            if (!string.IsNullOrEmpty(userdto.SocialLink1))
+            {
+                user.SocialLink1 = userdto.SocialLink1;
+            }
+
+            if (!string.IsNullOrEmpty(userdto.SocialLink2))
+            {
+                user.SocialLink2 = userdto.SocialLink2;
+            }
+
+            if (!string.IsNullOrEmpty(userdto.TimeOfService))
+            {
+                user.TimeOfService = userdto.TimeOfService;
+            }
+
+            if (!string.IsNullOrEmpty(userdto.AreaServe))
+            {
+                user.AreaServe = userdto.AreaServe;
+            }
+
+
+            user.Availability = userdto.Availability;
+
+            if (!string.IsNullOrEmpty(userdto.Skill1))
+            {
+                user.Skill1 = userdto.Skill1;
+            }
+
+            if (!string.IsNullOrEmpty(userdto.Skill2))
+            {
+                user.Skill2 = userdto.Skill2;
+            }
+
+            if (!string.IsNullOrEmpty(userdto.Skill3))
+            {
+                user.Skill3 = userdto.Skill3;
+            }
+            if (!string.IsNullOrEmpty(userdto.area))
+            {
+                user.area = userdto.area;
+            }
+            if (!string.IsNullOrEmpty(userdto.State))
+            {
+                user.State = userdto.State;
+            }
+            if (!string.IsNullOrEmpty(userdto.District))
+            {
+                user.District = userdto.District;
+            }
+
+            user.PinCode = userdto.PinCode;
+
+            if (!string.IsNullOrEmpty(userdto.City))
+            {
+                user.City = userdto.City;
+            }
+            if (!string.IsNullOrEmpty(userdto.Longitude))
+            {
+                user.Longitude = userdto.Longitude;
+            }
+            if (!string.IsNullOrEmpty(userdto.Latitude))
+            {
+                user.Latitude = userdto.Latitude;
+            }
+
+            // Save the changes to the database
+            _dbContext.SaveChanges();
+
+
+            return Ok(new { Message = "User's Personal data updated successfully." });
 
 
 
+        }
+
+
+        [HttpPut]
+        [Route("UpdateService")]
+        public ActionResult UserUpadteS(int id, PUpdateServiceDTO userdto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var user = _dbContext.Providers.FirstOrDefault(x => x.ProviderId == id);
+            if (user == null)
+            {
+                return NotFound("User id is invalid..");
+
+            }
+            if (!string.IsNullOrEmpty(userdto.ServiceName1))
+            {
+                user.ServiceName1 = userdto.ServiceName1;
+            }
+
+            if (!(userdto.ServicePrice1 < 0 || userdto.ServicePrice1 == null))
+            {
+                user.ServicePrice1 = userdto.ServicePrice1;
+            }
+
+            if (!string.IsNullOrEmpty(userdto.ServiceImage1))
+            {
+                user.ServiceImage1 = userdto.ServiceImage1;
+            }
+
+            if (!string.IsNullOrEmpty(userdto.ServiceName2))
+            {
+                user.ServiceName2 = userdto.ServiceName2;
+            }
+
+            if (!(userdto.ServicePrice2 < 0 || userdto.ServicePrice2 == null))
+            {
+                user.ServicePrice2 = userdto.ServicePrice2;
+            }
+
+            if (!string.IsNullOrEmpty(userdto.ServiceImage2))
+            {
+                user.ServiceImage2 = userdto.ServiceImage2;
+            }
+
+            if (!string.IsNullOrEmpty(userdto.ServiceName3))
+            {
+                user.ServiceName3 = userdto.ServiceName3;
+            }
+
+            if (!(userdto.ServicePrice3 < 0 || userdto.ServicePrice3 == null))
+            {
+                user.ServicePrice3 = userdto.ServicePrice3;
+            }
+
+            if (!string.IsNullOrEmpty(userdto.ServiceImage3))
+            {
+                user.ServiceImage3 = userdto.ServiceImage3;
+            }
+
+            // Save the changes to the database
+            _dbContext.SaveChanges();
+            return Ok(new { Message = "User's Personal data updated successfully." });
+
+        }
     }
 }
