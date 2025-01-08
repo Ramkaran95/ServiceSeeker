@@ -180,9 +180,9 @@ namespace ServiceSeeker.Controllers
 
             return Ok(new { Message = "User updated successfully." });
         }
+
         [HttpPut]
         [Route("changePassword")]
-
         public ActionResult ChangePassword(int id ,changePasswordDTO changePassword)
         {
             if (string.IsNullOrEmpty(changePassword.existingPassword) || string.IsNullOrEmpty(changePassword.newPassword))
@@ -211,7 +211,7 @@ namespace ServiceSeeker.Controllers
 
         [HttpPost]
         [Route("ResetPassword")]
-        public IActionResult ResetPassword([FromBody] Model.UserDTO.resetPasswordDTO resetDto)
+        public IActionResult ResetPassword([FromBody] resetPasswordDTO resetDto)
         {
             var user = _dbContext.Users.FirstOrDefault(x => x.Email == resetDto.Email);
             if (user == null)

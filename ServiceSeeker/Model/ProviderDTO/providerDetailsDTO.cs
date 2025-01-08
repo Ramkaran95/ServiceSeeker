@@ -2,16 +2,15 @@
 
 namespace ServiceSeeker.Model.ProviderDTO
 {
-    public class RegDTO
+    public class providerDetailsDTO
     {
         public int ProviderId { get; set; }
 
         [Required, MaxLength(100)]
 
         public required string UserName { get; set; }
-      
-        [MinLength(8)]
-        public required string Password { get; set; }
+
+        
 
         [Required, MaxLength(100)]
         public required string FirstName { get; set; }
@@ -25,14 +24,11 @@ namespace ServiceSeeker.Model.ProviderDTO
         [MaxLength(255)]
         public string? ProfilePhoto { get; set; } = "defaultProfile.jpg";
 
-        [Required, MinLength(10),MaxLength(15)]
+        [Required, MinLength(10), MaxLength(15)]
         public required string PhoneNumber { get; set; }
 
         [EmailAddress(ErrorMessage = "Invalid email address..")]
         public required string Email { get; set; }
-
-        [Required]
-        public required DateTime CreateAt { get; set; } = DateTime.UtcNow;
 
         [Required, MaxLength(100)]
         public required string ProfessionType { get; set; }
@@ -112,7 +108,5 @@ namespace ServiceSeeker.Model.ProviderDTO
 
         [Required]
         public required string Latitude { get; set; }
-
-       
     }
 }
