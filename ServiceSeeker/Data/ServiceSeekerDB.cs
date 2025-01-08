@@ -10,8 +10,10 @@ namespace ServiceSeeker.Data
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Provider> Providers { get; set; }  
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+
+       protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Configure a unique constraint for multiple properties
             modelBuilder.Entity<User>()

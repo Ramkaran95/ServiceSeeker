@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ServiceSeeker.Data;
 
@@ -11,9 +12,11 @@ using ServiceSeeker.Data;
 namespace ServiceSeeker.Migrations
 {
     [DbContext(typeof(ServiceSeekerDB))]
-    partial class ServiceSeekerDBModelSnapshot : ModelSnapshot
+    [Migration("20250108004838_ProviderTableCreated")]
+    partial class ProviderTableCreated
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
