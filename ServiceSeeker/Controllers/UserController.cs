@@ -52,7 +52,7 @@ namespace ServiceSeeker.Controllers
             if (existingUser != null)
             {
 
-                return BadRequest("User already exists with same email address");
+                return BadRequest("User already exists with same email address or username");
 
             }
 
@@ -66,7 +66,14 @@ namespace ServiceSeeker.Controllers
                 LastName = usersDTO.LastName,
                 MiddleName = usersDTO.MiddleName,
                 Password = usersDTO.Password,
-                PhoneNumber = usersDTO.PhoneNumber
+                PhoneNumber = usersDTO.PhoneNumber,
+                State= usersDTO.State,
+                District =usersDTO.District ,
+                PinCode = usersDTO.PinCode,
+                Area = usersDTO.Area,
+                City = usersDTO.City
+
+
             };
 
 
@@ -98,7 +105,13 @@ namespace ServiceSeeker.Controllers
                 MiddleName = userdata.MiddleName,
                 LastName = userdata.LastName,
                 Email = userdata.Email,
-                PhoneNumber = userdata.PhoneNumber
+                PhoneNumber = userdata.PhoneNumber,
+                Area = userdata.Area,
+                State = userdata.State,
+                District = userdata.District,
+                PinCode = userdata.PinCode,
+                City = userdata.City
+
             };
 
 
@@ -173,6 +186,25 @@ namespace ServiceSeeker.Controllers
                 }
 
                 user.Email = userdto.Email;
+            }
+            if (!string.IsNullOrEmpty(userdto.Area))
+            {
+                user.Area = userdto.Area;
+            }
+            if (!string.IsNullOrEmpty(userdto.State))
+            {
+                user.State = userdto.State;
+            }
+            if (!string.IsNullOrEmpty(userdto.District))
+            {
+                user.District = userdto.District;
+            }
+
+            user.PinCode = userdto.PinCode;
+
+            if (!string.IsNullOrEmpty(userdto.City))
+            {
+                user.City = userdto.City;
             }
 
             // Save the changes to the database
@@ -253,12 +285,12 @@ namespace ServiceSeeker.Controllers
             _dbContext.SaveChanges();
 
             // Simulate sending OTP (replace with actual email/SMS service)
-            SendOtpToUser(user.Email, otp);
+            SendOtpToUser(user.Email,user.FirstName, otp);
 
             return Ok(new { Message = "OTP sent successfully." });
         }
 
-        private void SendOtpToUser(string email, string otp)
+        private void SendOtpToUser(string email,string name, string otp)
         {
             try
             {
@@ -275,7 +307,7 @@ namespace ServiceSeeker.Controllers
                 {
                     From = new MailAddress("death95035@gmail.com", "ServiceSeeker Support"),
                     Subject = "Your OTP for Password Reset",
-                    Body = $"Hello,\n\nYour OTP for resetting your password is: {otp}\n\nThis OTP is valid for 10 minutes.\n\nThank you,\nServiceSeeker Team",
+                    Body = $"Hello {name},\n\nYour OTP for resetting your password is: {otp}\n\nThis OTP is valid for 10 minutes.\n\nThank you,\nServiceSeeker Team",
                     IsBodyHtml = false,
                 };
                 mailMessage.To.Add(email);

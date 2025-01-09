@@ -53,7 +53,7 @@ namespace ServiceSeeker.Controllers
             if (existingUser != null)
             {
 
-                return BadRequest("User already exists with same email address");
+                return BadRequest("User already exists with same email address or username");
 
             }
 

@@ -44,5 +44,20 @@ namespace ServiceSeeker.Model
 
         public DateTime? OtpExpiry { get; set; } = null;
 
+        [Required, MaxLength(100)]
+        public required string State { get; set; }
+
+        [Required, MaxLength(100)]
+        public required string District { get; set; }
+
+        [Required]
+        public required int PinCode { get; set; }
+        public string? Area { get; set; } = null;   
+
+        [Required, MaxLength(100)]
+        public required string City { get; set; }
+
+
+
     }
 }
