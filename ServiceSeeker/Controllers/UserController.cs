@@ -75,11 +75,12 @@ namespace ServiceSeeker.Controllers
 
 
             };
+            try {
 
-
-            _dbContext.Users.Add(data);
-            _dbContext.SaveChanges();
-
+                _dbContext.Users.Add(data);
+                _dbContext.SaveChanges();
+            }
+            catch (Exception ex) { return BadRequest("Unable to save data!"+ex.Message); }
 
             return Ok("Registration done successfully");
         }

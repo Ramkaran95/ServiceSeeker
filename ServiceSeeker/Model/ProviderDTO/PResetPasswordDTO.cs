@@ -11,6 +11,7 @@ namespace ServiceSeeker.Model.ProviderDTO
         [Required]
         public required string Otp { get; set; }
         [Required]
+        [MinLength(8)]
         public required string NewPassword { get; set; }
 
 
