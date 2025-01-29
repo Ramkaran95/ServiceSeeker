@@ -100,6 +100,7 @@ namespace ServiceSeeker.Controllers
             }
             var details = new userDetailsDTO()
             {
+                UserId= userdata.UserId,
                 UserName = userdata.UserName,
 
                 FirstName = userdata.FirstName,
@@ -235,7 +236,7 @@ namespace ServiceSeeker.Controllers
             }
             
            
-                return NotFound("Incorrect Password..!");
+                return NotFound(new { Message = "Incorrect Existing Password" });
 
 
             
@@ -326,6 +327,30 @@ namespace ServiceSeeker.Controllers
 
 
 
+
+        }
+        [HttpDelete]
+        [Route("DeleteUser")]
+        public ActionResult DeleteUser(int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+
+            var info = _dbContext.Users.FirstOrDefault(x => x.UserId == id);
+            if (info == null)
+            {
+                return NotFound(new { Message = "User is not register " });
+
+
+
+            }
+            _dbContext.Users.Remove(info);
+
+            _dbContext.SaveChanges();
+            return Ok("Account Deleted");
 
         }
     }

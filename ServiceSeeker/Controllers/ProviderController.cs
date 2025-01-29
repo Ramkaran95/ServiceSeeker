@@ -537,5 +537,41 @@ namespace ServiceSeeker.Controllers
             return Ok(new { Message = "User's Personal data updated successfully." });
 
         }
+
+
+
+        [HttpDelete]
+        [Route("DeleteUser")]
+        public ActionResult DeleteUser(int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+
+            var info = _dbContext.Providers.FirstOrDefault(x => x.ProviderId == id);
+            if (info == null)
+            {
+                return NotFound(new { Message = "Provider is not register " });
+
+
+
+            }
+            _dbContext.Providers.Remove(info);
+
+            _dbContext.SaveChanges();
+            return Ok("Account Deleted");
+
+        }
+
+
+
+
+
+
+
+
     }
+    
 }

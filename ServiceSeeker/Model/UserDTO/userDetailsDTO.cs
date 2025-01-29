@@ -4,6 +4,7 @@ namespace ServiceSeeker.Model.UserDTO
 {
     public class userDetailsDTO
     {
+        public required int  UserId { get; set; }
         public required string UserName { get; set; }
         public required string FirstName { get; set; }
         public string? MiddleName { get; set; } = null;
