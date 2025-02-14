@@ -29,6 +29,39 @@ namespace ServiceSeeker.Controllers
             var allUser = _dbContext.Users.ToList();
             return Ok(allUser);
         }
+        [HttpGet]
+        [Route("GetUser")]
+        public ActionResult GetUserById(int id)
+
+        {
+            var userdata = _dbContext.Users.FirstOrDefault(p=>p.UserId==id);
+            if (userdata == null)
+            {
+
+                return BadRequest("user data not found ..!");
+            }
+            var details = new userDetailsDTO()
+            {
+                UserId = userdata.UserId,
+                UserName = userdata.UserName,
+
+                FirstName = userdata.FirstName,
+                MiddleName = userdata.MiddleName,
+                LastName = userdata.LastName,
+                Email = userdata.Email,
+                PhoneNumber = userdata.PhoneNumber,
+                Area = userdata.Area,
+                State = userdata.State,
+                District = userdata.District,
+                PinCode = userdata.PinCode,
+                City = userdata.City
+
+            };
+
+
+
+            return Ok(details);
+        }
 
         [HttpPost]
         [Route("Registration")]

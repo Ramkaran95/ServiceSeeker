@@ -8,6 +8,7 @@ using ServiceSeeker.Model.ProviderDTO;
 
 using System.Net;
 using System.Net.Mail;
+using static System.Net.Mime.MediaTypeNames;
 using static System.Net.WebRequestMethods;
 
 
@@ -18,9 +19,11 @@ namespace ServiceSeeker.Controllers
     public class ProviderController : ControllerBase
     {
         private readonly ServiceSeekerDB _dbContext;
-        public ProviderController(ServiceSeekerDB _dbContext)
+        private readonly IWebHostEnvironment _env;
+        public ProviderController(ServiceSeekerDB _dbContext, IWebHostEnvironment env)
         {
             this._dbContext = _dbContext;
+            this._env = env;
         }
 
         [HttpGet]
@@ -29,6 +32,61 @@ namespace ServiceSeeker.Controllers
         {
             var allUser = _dbContext.Providers.ToList();
             return Ok(allUser);
+        }
+        [HttpGet]
+        [Route("GetProvider")]
+        public ActionResult GetProviderById(int id)
+
+        {
+            var userdata = _dbContext.Providers.FirstOrDefault(x => x.ProviderId == id);
+            if (userdata == null)
+            {
+
+                return BadRequest("provider details not found..!");
+            }
+            var details = new providerDetailsDTO()
+            {
+
+                ProviderId = userdata.ProviderId,
+
+                UserName = userdata.UserName,
+                Email = userdata.Email,
+                FirstName = userdata.FirstName,
+                LastName = userdata.LastName,
+                MiddleName = userdata.MiddleName,
+                PhoneNumber = userdata.PhoneNumber,
+                ProfilePhoto = userdata.ProfilePhoto,
+                ProfessionType = userdata.ProfessionType,
+                YearOfEx = userdata.YearOfEx,
+                Bio = userdata.Bio,
+                LanguageSpoke = userdata.LanguageSpoke,
+                SocialLink1 = userdata.SocialLink1,
+                SocialLink2 = userdata.SocialLink2,
+                TimeOfService = userdata.TimeOfService,
+                AreaServe = userdata.AreaServe,
+                Availability = userdata.Availability,
+                Skill1 = userdata.Skill1,
+                Skill2 = userdata.Skill2,
+                Skill3 = userdata.Skill3,
+                ServiceName1 = userdata.ServiceName1,
+                ServicePrice1 = userdata.ServicePrice1,
+                ServiceImage1 = userdata.ServiceImage1,
+                ServiceName2 = userdata.ServiceName2,
+                ServicePrice2 = userdata.ServicePrice2,
+                ServiceImage2 = userdata.ServiceImage2,
+                ServiceName3 = userdata.ServiceName3,
+                ServicePrice3 = userdata.ServicePrice3,
+                ServiceImage3 = userdata.ServiceImage3,
+                area = userdata.area,
+                State = userdata.State,
+                District = userdata.District,
+                PinCode = userdata.PinCode,
+                City = userdata.City,
+                Longitude = userdata.Longitude,
+                Latitude = userdata.Latitude,
+            };
+
+            return Ok(details);
         }
 
         [HttpPost]
@@ -294,18 +352,63 @@ namespace ServiceSeeker.Controllers
 
         [HttpPut]
         [Route("UpdatePersonal")]
-        public ActionResult UserUpdate(int id, PUpdatePersonalDTO userdto)
+        public async Task<IActionResult> UserUpdate([FromForm]int id,IFormFile? image, [FromForm] PUpdatePersonalDTO userdto)
         {
-
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+            string uploadPath = Path.Combine(_env.WebRootPath, "uploads");
+            if (!Directory.Exists(uploadPath))
+            {
+                Directory.CreateDirectory(uploadPath);
+            }
+
+
+            async Task<string?> SaveImage(IFormFile? image)
+            {
+                if (image == null) return null;
+
+                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
+                string filePath = Path.Combine(uploadPath, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await image.CopyToAsync(stream);
+                }
+
+                return $"uploads/{fileName}";
+            }
+
+
+            void DeleteOldImage(string? oldImagePath)
+            {
+                if (!string.IsNullOrEmpty(oldImagePath))
+                {
+                    string fullPath = Path.Combine(_env.WebRootPath, oldImagePath.TrimStart('/'));
+                    if (System.IO.File.Exists(fullPath))
+                    {
+                        System.IO.File.Delete(fullPath);
+                    }
+                }
+            }
+
+
+         
+
+            
+
+            
             var user = _dbContext.Providers.FirstOrDefault(x => x.ProviderId == id);
             if (user == null)
             {
                 return NotFound("User id is invalid..");
 
+            }
+            if (image != null)
+            {
+                DeleteOldImage(user.ServiceImage1);
+               user.ProfilePhoto = await SaveImage(image);
             }
             // Update only the provided properties
             if (!string.IsNullOrEmpty(userdto.UserName) && user.UserName != userdto.UserName)
@@ -352,11 +455,7 @@ namespace ServiceSeeker.Controllers
 
                 user.Email = userdto.Email;
             }
-            if (!string.IsNullOrEmpty(userdto.ProfilePhoto))
-            {
-                user.ProfilePhoto = userdto.ProfilePhoto;
-            }
-
+          
             // Save the changes to the database
             _dbContext.SaveChanges();
 
@@ -473,70 +572,70 @@ namespace ServiceSeeker.Controllers
         }
 
 
-        [HttpPut]
-        [Route("UpdateService")]
-        public ActionResult UserUpadteS(int id, PUpdateServiceDTO userdto)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var user = _dbContext.Providers.FirstOrDefault(x => x.ProviderId == id);
-            if (user == null)
-            {
-                return NotFound("User id is invalid..");
+        //[HttpPut]
+        //[Route("UpdateService")]
+        //public ActionResult UserUpadteS(int id, PUpdateServiceDTO userdto)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
+        //    var user = _dbContext.Providers.FirstOrDefault(x => x.ProviderId == id);
+        //    if (user == null)
+        //    {
+        //        return NotFound("User id is invalid..");
 
-            }
-            if (!string.IsNullOrEmpty(userdto.ServiceName1))
-            {
-                user.ServiceName1 = userdto.ServiceName1;
-            }
+        //    }
+        //    if (!string.IsNullOrEmpty(userdto.ServiceName1))
+        //    {
+        //        user.ServiceName1 = userdto.ServiceName1;
+        //    }
 
-            if (!(userdto.ServicePrice1 < 0 || userdto.ServicePrice1 == null))
-            {
-                user.ServicePrice1 = userdto.ServicePrice1;
-            }
+        //    if (!(userdto.ServicePrice1 < 0 || userdto.ServicePrice1 == null))
+        //    {
+        //        user.ServicePrice1 = userdto.ServicePrice1;
+        //    }
 
-            if (!string.IsNullOrEmpty(userdto.ServiceImage1))
-            {
-                user.ServiceImage1 = userdto.ServiceImage1;
-            }
+        //    if (!string.IsNullOrEmpty(userdto.ServiceImage1))
+        //    {
+        //        user.ServiceImage1 = userdto.ServiceImage1;
+        //    }
 
-            if (!string.IsNullOrEmpty(userdto.ServiceName2))
-            {
-                user.ServiceName2 = userdto.ServiceName2;
-            }
+        //    if (!string.IsNullOrEmpty(userdto.ServiceName2))
+        //    {
+        //        user.ServiceName2 = userdto.ServiceName2;
+        //    }
 
-            if (!(userdto.ServicePrice2 < 0 || userdto.ServicePrice2 == null))
-            {
-                user.ServicePrice2 = userdto.ServicePrice2;
-            }
+        //    if (!(userdto.ServicePrice2 < 0 || userdto.ServicePrice2 == null))
+        //    {
+        //        user.ServicePrice2 = userdto.ServicePrice2;
+        //    }
 
-            if (!string.IsNullOrEmpty(userdto.ServiceImage2))
-            {
-                user.ServiceImage2 = userdto.ServiceImage2;
-            }
+        //    if (!string.IsNullOrEmpty(userdto.ServiceImage2))
+        //    {
+        //        user.ServiceImage2 = userdto.ServiceImage2;
+        //    }
 
-            if (!string.IsNullOrEmpty(userdto.ServiceName3))
-            {
-                user.ServiceName3 = userdto.ServiceName3;
-            }
+        //    if (!string.IsNullOrEmpty(userdto.ServiceName3))
+        //    {
+        //        user.ServiceName3 = userdto.ServiceName3;
+        //    }
 
-            if (!(userdto.ServicePrice3 < 0 || userdto.ServicePrice3 == null))
-            {
-                user.ServicePrice3 = userdto.ServicePrice3;
-            }
+        //    if (!(userdto.ServicePrice3 < 0 || userdto.ServicePrice3 == null))
+        //    {
+        //        user.ServicePrice3 = userdto.ServicePrice3;
+        //    }
 
-            if (!string.IsNullOrEmpty(userdto.ServiceImage3))
-            {
-                user.ServiceImage3 = userdto.ServiceImage3;
-            }
+        //    if (!string.IsNullOrEmpty(userdto.ServiceImage3))
+        //    {
+        //        user.ServiceImage3 = userdto.ServiceImage3;
+        //    }
 
-            // Save the changes to the database
-            _dbContext.SaveChanges();
-            return Ok(new { Message = "User's Personal data updated successfully." });
+        //    // Save the changes to the database
+        //    _dbContext.SaveChanges();
+        //    return Ok(new { Message = "User's Personal data updated successfully." });
 
-        }
+        //}
 
 
 
@@ -567,11 +666,114 @@ namespace ServiceSeeker.Controllers
 
 
 
+        [HttpPost]
+        [Route("AddService")]
+        [Consumes("multipart/form-data")]
+        
+        public async Task<IActionResult> AddService(
+      IFormFile? image1,
+      IFormFile? image2,
+     IFormFile? image3,
+ [FromForm] PUpdateServiceDTO pUpdateService,
+      [FromForm] int providerId)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+               
+                string uploadPath = Path.Combine(_env.WebRootPath, "uploads");
+                if (!Directory.Exists(uploadPath))
+                {
+                    Directory.CreateDirectory(uploadPath);
+                }
+
+             
+                async Task<string?> SaveImage(IFormFile? image)
+                {
+                    if (image == null) return null;
+
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
+                    string filePath = Path.Combine(uploadPath, fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await image.CopyToAsync(stream);
+                    }
+
+                    return $"/uploads/{fileName}";
+                }
+
+              
+                void DeleteOldImage(string? oldImagePath)
+                {
+                    if (!string.IsNullOrEmpty(oldImagePath))
+                    {
+                        string fullPath = Path.Combine(_env.WebRootPath, oldImagePath.TrimStart('/'));
+                        if (System.IO.File.Exists(fullPath))
+                        {
+                            System.IO.File.Delete(fullPath);
+                        }
+                    }
+                }
+
+           
+                var provider = _dbContext.Providers.FirstOrDefault(x => x.ProviderId == providerId);
+                if (provider == null)
+                {
+                    return BadRequest("Provider not found.");
+                }
+
+               
+                if (image1 != null)
+                {
+                    DeleteOldImage(provider.ServiceImage1);
+                    provider.ServiceImage1 = await SaveImage(image1);
+                }
+
+                if (image2 != null)
+                {
+                    DeleteOldImage(provider.ServiceImage2);
+                    provider.ServiceImage2 = await SaveImage(image2);
+                }
+
+                if (image3 != null)
+                {
+                    DeleteOldImage(provider.ServiceImage3);
+                    provider.ServiceImage3 = await SaveImage(image3);
+                }
+
+               
+                if (!string.IsNullOrEmpty(pUpdateService.ServiceName1))
+                    provider.ServiceName1 = pUpdateService.ServiceName1;
+                if (!string.IsNullOrEmpty(pUpdateService.ServiceName2))
+                    provider.ServiceName2 = pUpdateService.ServiceName2;
+                if (!string.IsNullOrEmpty(pUpdateService.ServiceName3))
+                    provider.ServiceName3 = pUpdateService.ServiceName3;
+
+                provider.ServicePrice1 = pUpdateService.ServicePrice1;
+                provider.ServicePrice2 = pUpdateService.ServicePrice2;
+                provider.ServicePrice3 = pUpdateService.ServicePrice3;
+
+              
+                await _dbContext.SaveChangesAsync();
+
+                return Ok(new { message = "Service updated successfully" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal Server Error: " + ex.Message);
+            }
+        }
+
 
 
 
 
 
     }
-    
+
 }

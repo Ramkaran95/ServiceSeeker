@@ -10,6 +10,16 @@
 *.userosscache
 *.sln.docstates
 
+# Ignore all image files
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.tiff
+*.svg
+*.webp
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 

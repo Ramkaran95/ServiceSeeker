@@ -118,6 +118,7 @@ namespace ServiceSeeker.Controllers
                         ServiceName3 = p.ServiceName3,
                         ServicePrice3 = p.ServicePrice3,
                         ServiceImage3 = p.ServiceImage3,
+                        Area =p.area,
                         State = p.State,
                         District = p.District,
                         PinCode = p.PinCode,

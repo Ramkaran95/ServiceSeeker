@@ -32,7 +32,9 @@
     public string? ServiceName3 { get; set; }
     public decimal? ServicePrice3 { get; set; }
     public string? ServiceImage3 { get; set; }
-    public required string State { get; set; }
+        public string? Area{ get; set; }
+
+        public required string State { get; set; }
     public required string District { get; set; }
     public int PinCode { get; set; }
     public required string City { get; set; }

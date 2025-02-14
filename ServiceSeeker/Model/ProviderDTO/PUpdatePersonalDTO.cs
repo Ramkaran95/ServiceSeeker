@@ -21,8 +21,7 @@ namespace ServiceSeeker.Model.ProviderDTO
         [MaxLength(100)]
         public string? LastName { get; set; }
 
-        [MaxLength(255)]
-        public string? ProfilePhoto { get; set; } = "defaultProfile.jpg";
+       
 
         [Required, MinLength(10), MaxLength(15)]
         public required string PhoneNumber { get; set; }
