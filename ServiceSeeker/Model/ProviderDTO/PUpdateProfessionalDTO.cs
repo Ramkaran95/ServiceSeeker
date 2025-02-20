@@ -40,25 +40,8 @@ namespace ServiceSeeker.Model.ProviderDTO
 
         [MaxLength(255)]
         public string? Skill3 { get; set; }
-        public string? area { get; set; } = null;
-        [Required, MaxLength(100)]
-        public required string State { get; set; }
-
-        [Required, MaxLength(100)]
-        public required string District { get; set; }
-
-        [Required]
-        [Range(100000, 999999, ErrorMessage = "Pincode must be a 6-digit number.")]
-        public required int PinCode { get; set; }
-
-        [Required, MaxLength(100)]
-        public required string City { get; set; }
-
-        [Required]
-        public required string Longitude { get; set; }
-
-        [Required]
-        public required string Latitude { get; set; }
+      
+      
 
     }
 }

@@ -407,7 +407,7 @@ namespace ServiceSeeker.Controllers
             }
             if (image != null)
             {
-                DeleteOldImage(user.ServiceImage1);
+                DeleteOldImage(user.ProfilePhoto);
                user.ProfilePhoto = await SaveImage(image);
             }
             // Update only the provided properties
@@ -442,6 +442,34 @@ namespace ServiceSeeker.Controllers
             {
                 user.PhoneNumber = userdto.PhoneNumber;
             }
+            if (!string.IsNullOrEmpty(userdto.Area))
+            {
+                user.area = userdto.Area;
+            }
+            if (!string.IsNullOrEmpty(userdto.State))
+            {
+                user.State = userdto.State;
+            }
+            if (!string.IsNullOrEmpty(userdto.District))
+            {
+                user.District = userdto.District;
+            }
+
+            user.PinCode = userdto.PinCode;
+
+            if (!string.IsNullOrEmpty(userdto.City))
+            {
+                user.City = userdto.City;
+            }
+            if (!string.IsNullOrEmpty(userdto.Latitude))
+            {
+                user.Latitude = userdto.Latitude;
+            }
+            if (!string.IsNullOrEmpty(userdto.Longitude))
+            {
+                user.Longitude = userdto.Longitude;
+            }
+
 
             if (!string.IsNullOrEmpty(userdto.Email) && user.Email != userdto.Email)
             {
@@ -533,33 +561,9 @@ namespace ServiceSeeker.Controllers
             {
                 user.Skill3 = userdto.Skill3;
             }
-            if (!string.IsNullOrEmpty(userdto.area))
-            {
-                user.area = userdto.area;
-            }
-            if (!string.IsNullOrEmpty(userdto.State))
-            {
-                user.State = userdto.State;
-            }
-            if (!string.IsNullOrEmpty(userdto.District))
-            {
-                user.District = userdto.District;
-            }
 
-            user.PinCode = userdto.PinCode;
-
-            if (!string.IsNullOrEmpty(userdto.City))
-            {
-                user.City = userdto.City;
-            }
-            if (!string.IsNullOrEmpty(userdto.Longitude))
-            {
-                user.Longitude = userdto.Longitude;
-            }
-            if (!string.IsNullOrEmpty(userdto.Latitude))
-            {
-                user.Latitude = userdto.Latitude;
-            }
+         
+          
 
             // Save the changes to the database
             _dbContext.SaveChanges();
@@ -666,7 +670,7 @@ namespace ServiceSeeker.Controllers
 
 
 
-        [HttpPost]
+        [HttpPut]
         [Route("AddService")]
         [Consumes("multipart/form-data")]
         
@@ -675,7 +679,7 @@ namespace ServiceSeeker.Controllers
       IFormFile? image2,
      IFormFile? image3,
  [FromForm] PUpdateServiceDTO pUpdateService,
-      [FromForm] int providerId)
+      [FromForm] int id)
         {
             try
             {
@@ -721,7 +725,7 @@ namespace ServiceSeeker.Controllers
                 }
 
            
-                var provider = _dbContext.Providers.FirstOrDefault(x => x.ProviderId == providerId);
+                var provider = _dbContext.Providers.FirstOrDefault(x => x.ProviderId == id);
                 if (provider == null)
                 {
                     return BadRequest("Provider not found.");
