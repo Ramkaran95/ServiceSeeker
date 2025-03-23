@@ -29,7 +29,7 @@ namespace ServiceSeeker.Model
         public string? LastName { get; set; }
 
         [MaxLength(255)]
-        public string? ProfilePhoto { get; set; } = "defaultProfile.jpg";
+        public string? ProfilePhoto { get; set; } = "uploads/profile.png";
 
         [Required, MinLength(15)]
         public required string PhoneNumber { get; set; }

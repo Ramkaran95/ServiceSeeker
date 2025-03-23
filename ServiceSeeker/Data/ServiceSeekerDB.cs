@@ -12,7 +12,9 @@ namespace ServiceSeeker.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Provider> Providers { get; set; }  
 
+        public DbSet<Booking> Bookings { get; set; }
 
-     
+
+
     }
 }
